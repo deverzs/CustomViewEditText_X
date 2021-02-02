@@ -82,16 +82,18 @@ implements ItemTouchHelperAdapter {
         holder.txt_number.setText(new StringBuilder().append(position));
         holder.txt_title.setText(stringList.get(position));
 
-        holder.item.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View view, MotionEvent motionEvent) {
-                final int action = motionEvent.getAction();
-                if(action == MotionEvent.ACTION_DOWN) {
-                    listener.onStartDrag(holder);
-                }
-                return false;
-            }
+        holder.item.setOnLongClickListener(view -> {
+            listener.onStartDrag(holder);
+            return true;
         });
+
+//        holder.item.setOnTouchListener((view, motionEvent) -> {
+//            final int action = motionEvent.getAction();
+//            if(action == MotionEvent.ACTION_DOWN) {
+//                listener.onStartDrag(holder);
+//            }
+//            return false;
+//        });
 
     }
 
