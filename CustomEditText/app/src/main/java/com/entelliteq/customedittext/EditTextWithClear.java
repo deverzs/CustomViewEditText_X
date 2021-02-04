@@ -7,32 +7,52 @@ import android.text.TextWatcher;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
+
 import androidx.appcompat.widget.AppCompatEditText;
 import androidx.core.content.res.ResourcesCompat;
 
-public class EditTextWithClear extends AppCompatEditText {
+import com.entelliteq.customedittext.R;
 
+public class EditTextWithClear
+        extends AppCompatEditText {
 
-    //var
     Drawable mClearButtonImage;
 
-    //init
+    public EditTextWithClear(Context context) {
+        super(context);
+        init();
+    }
+
+    public EditTextWithClear(Context context, AttributeSet attrs) {
+        super(context, attrs);
+        init();
+    }
+
+    public EditTextWithClear(Context context,
+                             AttributeSet attrs, int defStyleAttr) {
+        super(context, attrs, defStyleAttr);
+        init();
+    }
+
     private void init() {
         // Initialize Drawable member variable.
         mClearButtonImage =
                 ResourcesCompat.getDrawable(getResources(),
-                        R.drawable.ic_clear_black_50dp, null);
+                        R.drawable.ic_clear_opaque_50dp, null);
 
         // If the X (clear) button is tapped, clear the text.
         setOnTouchListener(new OnTouchListener() {
+
+            float clearButtonStart; // Used for LTR languages
+            float clearButtonEnd;  // Used for RTL languages
+            boolean isClearButtonClicked = false;
+
             @Override
             public boolean onTouch(View v, MotionEvent event) {
                 // Use the getCompoundDrawables()[2] expression to check
                 // if the drawable is on the "end" of text [2].
                 if ((getCompoundDrawablesRelative()[2] != null)) {
-                    float clearButtonStart; // Used for LTR languages
-                    float clearButtonEnd;  // Used for RTL languages
-                    boolean isClearButtonClicked = false;
+
                     // Detect the touch in RTL or LTR layout direction.
                     if (getLayoutDirection() == LAYOUT_DIRECTION_RTL) {
                         // If RTL, get the end of the button on the left side.
@@ -61,7 +81,7 @@ public class EditTextWithClear extends AppCompatEditText {
                             // Switch to the black version of clear button.
                             mClearButtonImage =
                                     ResourcesCompat.getDrawable(getResources(),
-                                            R.drawable.ic_clear_black_50dp, null);
+                                            R.drawable.ic_clear_black_24dp, null);
                             showClearButton();
                         }
                         // Check for ACTION_UP.
@@ -69,7 +89,7 @@ public class EditTextWithClear extends AppCompatEditText {
                             // Switch to the opaque version of clear button.
                             mClearButtonImage =
                                     ResourcesCompat.getDrawable(getResources(),
-                                            R.drawable.ic_clear_black_50dp, null);
+                                            R.drawable.ic_clear_opaque_50dp, null);
                             // Clear the text and hide the clear button.
                             getText().clear();
                             hideClearButton();
@@ -104,46 +124,28 @@ public class EditTextWithClear extends AppCompatEditText {
         });
     }
 
+    /**
+     * Shows the clear (X) button.
+     */
 
-    //set clear(X) to end of text (RTL languages)
-    //null for not showing drawable
-    //setCoumpound... shows exact size of the drawable
     private void showClearButton() {
-        setCompoundDrawablesRelativeWithIntrinsicBounds(
-                null,
-                null,
-                mClearButtonImage,
-                null
-        );
-    }
-
-    private void hideClearButton() {
-        setCompoundDrawablesRelativeWithIntrinsicBounds(
-                null,
-                null,
-                null,
-                null
-        );
+        // Sets the Drawables (if any) to appear to the left of,
+        // above, to the right of, and below the text.
+        setCompoundDrawablesRelativeWithIntrinsicBounds
+                (null,                      // Start of text.
+                        null,               // Top of text.
+                        mClearButtonImage,  // End of text.
+                        null);              // Below text.
     }
 
     /**
-     * Constructors
+     * Hides the clear button.
      */
-    //instance created programatically
-    public EditTextWithClear(Context context) {
-        super(context);
-        init();
-    }
-
-    //from xml layout
-    public EditTextWithClear(Context context, AttributeSet attrs) {
-        super(context, attrs);
-        init();
-    }
-
-    //apply default style to all UI elements
-    public EditTextWithClear(Context context, AttributeSet attrs, int defStyleAttr) {
-        super(context, attrs, defStyleAttr);
-        init();
+    private void hideClearButton() {
+        setCompoundDrawablesRelativeWithIntrinsicBounds
+                (null,             // Start of text.
+                        null,      // Top of text.
+                        null,      // End of text.
+                        null);     // Below text.
     }
 }
